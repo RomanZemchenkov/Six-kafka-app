@@ -1,0 +1,57 @@
+version: '3.9'
+
+networks:
+  app-tier:
+    name: "app-tier"
+    driver: 'bridge'
+
+
+name: "kafka_order_container"
+services:
+  zookeeper:
+    image: 'confluentinc/cp-zookeeper'
+    container_name: 'zookeeper_order'
+    restart: "always"
+    ports:
+      - "2181:2181"
+    networks:
+      - 'app-tier'
+    environment:
+      - 'ZOO_TICK_TIME=2000'
+      - 'ZOOKEEPER_CLIENT_PORT=2181'
+    volumes:
+      - 'c:/docker/zookeeper-chat:/confluentinc/cp-zookeeper'
+
+  kafka:
+    image: 'confluentinc/cp-kafka'
+    container_name: "kafka_order"
+    restart: "always"
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    networks:
+      - 'app-tier'
+    depends_on:
+      - 'zookeeper'
+    environment:
+      - 'KAFKA_BROKER_ID=1'
+      - 'KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181'
+      - 'KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,PLAINTEXT_HOST://127.0.0.1:29092'
+      - 'KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      - 'KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29092'
+    volumes:
+      - "c:/docker/kafka-chat:/confluentinc/cp-kafka"
+
+  interactive_kafka:
+    container_name: 'kafka_order_ui'
+    image: 'provectuslabs/kafka-ui'
+    ports:
+      - "8081:8080"
+    depends_on:
+      - 'kafka'
+    networks:
+      - 'app-tier'
+    environment:
+      - 'KAFKA_CLUSTERS_0_NAME=local'
+      - 'KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092'
+      - 'KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181'

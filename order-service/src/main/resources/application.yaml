@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  kafka:
+    bootstrap-servers: "127.0.0.1:29092"
+    admin:
+      auto-create: true
+    producer:
+      acks: all
+      client-id: producer-app
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
