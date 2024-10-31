@@ -18,6 +18,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.boot>3.3.1</spring.boot>
+        <jackson>2.18.0</jackson>
     </properties>
 
     <parent>
@@ -41,6 +42,13 @@
                 <version>${spring-kafka.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>kafka</artifactId>
+                <version>1.20.0</version>
+                <scope>test</scope>
+            </dependency>
+
             <!--        kafka-->
             <dependency>
                 <groupId>org.springframework.kafka</groupId>
@@ -61,6 +69,13 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
+            </dependency>
+
+<!--            jackson-->
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${jackson}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

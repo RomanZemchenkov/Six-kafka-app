@@ -1,10 +1,13 @@
 package com.roman.web.controller;
 
-import com.roman.service.kafka.KafkaProducer;
+import com.roman.service.dto.Order;
+import com.roman.service.kafka.KafkaProducerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -12,15 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class OrderController {
 
-    private final KafkaProducer kafkaProducer;
+    private final KafkaProducerService kafkaProducerService;
 
-    @PostMapping("/test")
-    public String sendTestMessage(@RequestParam String message){
-        try{
-            kafkaProducer.sendTestMessage(message);
-            return "Success";
-        } catch (Throwable throwable){
-            return "Throwable";
-        }
+
+    @PostMapping("/send")
+    public ResponseEntity<?> sendMessage(@RequestBody Order order){
+        kafkaProducerService.sendOrderMessage(order);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
